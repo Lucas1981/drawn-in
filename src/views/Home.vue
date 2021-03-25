@@ -17,26 +17,53 @@
       </b-button>
       <b-button
         variant="danger"
-        @click="removeCanvas(index)"
+        @click="reset"
       >
-        Remove canvas
+        Remove canvases
       </b-button>
     </div>
 
     <div
       v-for="(canvas, index) of canvases"
-      :key="`canvas-${index}`"
+      :key="`canvas-${canvas.id}`"
+      class="mt-2"
     >
-      <b-form-checkbox
-        :id="`drawing-mode-checkbox-${index}`"
-        v-model="canvas.drawingMode"
-        :name="`drawing-mode-checkbox-${index}`"
-        @change="handleDrawingModeCheckboxChanged(index)"
-      >
-        Drawing mode
-      </b-form-checkbox>
+      <h4>Canvas {{ index + 1}}</h4>
+      <div class="d-flex justify-content-center align-items-center mb-1">
+        <b-form-input
+          :id="`color-input-${canvas.id}`"
+          type="color"
+          v-model="canvas.color"
+          class="custom-color-input mr-1"
+          @change="handleChangeColor(canvas)"
+        ></b-form-input>
+        <b-form-checkbox
+          :id="`drawing-mode-checkbox-${canvas.id}`"
+          v-model="canvas.drawingMode"
+          class="mr-1"
+          :name="`drawing-mode-checkbox-${canvas.id}`"
+          @change="handleDrawingModeCheckboxChanged(canvas.id)"
+        >
+          Drawing mode
+        </b-form-checkbox>
+        <b-button
+          variant="warning"
+          size="sm"
+          class="mr-1"
+          @click="clearCanvas(canvas.canvas)"
+        >
+          Clear canvas
+        </b-button>
+        <b-button
+          variant="danger"
+          size="sm"
+          @click="removeCanvas(canvas.id)"
+        >
+          Remove canvas
+        </b-button>
+      </div>
       <canvas
-        :id="`canvas-${index}`"
+        :id="`canvas-${canvas.id}`"
       ></canvas>
     </div>
   </div>
@@ -45,6 +72,7 @@
 <script>
 // @ is an alias to /src
 import CanvasFreeDrawing from 'canvas-free-drawing';
+import { hexToRgb } from '@/helper-functions';
 
 const dimensions = [
   { value: 'iphone', text: 'iPhone 11 Pro/x: 375x812', width: 375, height: 812 },
@@ -58,7 +86,8 @@ export default {
     canvases: [],
     selectedDimension: dimensions[0].value,
     width: dimensions[0].width,
-    height: dimensions[0].height
+    height: dimensions[0].height,
+    id: 0
   }),
   mounted() {
     this.addCanvas();
@@ -67,36 +96,60 @@ export default {
     this.dimensions = dimensions;
   },
   methods: {
-    async changeDimensions() {
+    changeDimensions() {
       const dimension = dimensions.find(({ value }) => value === this.selectedDimension);
       this.width = dimension.width;
       this.height = dimension.height;
+      this.reset();
+    },
+    async reset() {
       this.canvases = [];
+      this.id = 0;
       await this.$nextTick();
       this.addCanvas();
     },
-    removeCanvas(index) {
+    removeCanvas(id) {
+      const index = this.getCanvasById(id);
       this.canvases.splice(index, 1);
     },
-    handleDrawingModeCheckboxChanged(index) {
+    handleDrawingModeCheckboxChanged(id) {
+      const index = this.getCanvasById(id);
       this.canvases[index].canvas.toggleDrawingMode();
     },
+    getCanvasById(id) {
+      return this.canvases.findIndex(record => record.id === id);
+    },
+    handleChangeColor({canvas, color}) {
+      canvas.setStrokeColor(hexToRgb(color)); // in RGB
+    },
+    clearCanvas(canvas) {
+      canvas.clear();
+    },
     async addCanvas() {
-      let canvas = { drawingMode: true, canvas: null };
+      const canvas = {
+        drawingMode: true,
+        canvas: null,
+        color: '#000000',
+        lineWidth: 1,
+        id: this.id
+      };
       this.canvases.push(canvas);
       await this.$nextTick();
       canvas.canvas = new CanvasFreeDrawing({
-        elementId: `canvas-${this.canvases.length - 1}`,
+        elementId: `canvas-${this.id}`,
         width: this.width,
         height: this.height,
       });
 
       // set properties
-      canvas.canvas.setLineWidth(1); // in px
-      canvas.canvas.setStrokeColor([0, 0, 0]); // in RGB
+      canvas.canvas.setLineWidth(canvas.lineWidth); // in px
+
+      canvas.canvas.setStrokeColor(hexToRgb(canvas.color)); // in RGB
 
       // listen to events
       canvas.canvas.on({ event: 'redraw' }, this.redraw);
+
+      this.id++;
     },
     redraw() {
       // Do something
@@ -112,5 +165,9 @@ export default {
 
 .custom-select {
   max-width: 320px;
+}
+
+.custom-color-input {
+  max-width: 64px;
 }
 </style>
