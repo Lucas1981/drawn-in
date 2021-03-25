@@ -15,7 +15,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
   min-height: 100vh;
 }
 #nav {
