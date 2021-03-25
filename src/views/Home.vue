@@ -37,7 +37,7 @@
       </b-form-checkbox>
       <canvas
         :id="`canvas-${index}`"
-      ></div>
+      ></canvas>
     </div>
   </div>
 </template>
@@ -69,7 +69,6 @@ export default {
   methods: {
     async changeDimensions() {
       const dimension = dimensions.find(({ value }) => value === this.selectedDimension);
-      console.log(dimension);
       this.width = dimension.width;
       this.height = dimension.height;
       this.canvases = [];
@@ -98,8 +97,6 @@ export default {
 
       // listen to events
       canvas.canvas.on({ event: 'redraw' }, this.redraw);
-
-      console.log(this.canvases);
     },
     redraw() {
       // Do something
@@ -109,6 +106,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.home {
+  touch-action: none;
+}
+
 .custom-select {
   max-width: 320px;
 }
