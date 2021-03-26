@@ -12,6 +12,7 @@
     "bootstrap-vue": "^2.17.3",
     "canvas-free-drawing": "^2.1.0",
     "core-js": "^2.6.5",
+    "d3": "^6.6.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"
