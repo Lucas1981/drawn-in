@@ -185,6 +185,7 @@ import CustomCanvasFreeDrawing from '@/custom-canvas-free-drawing';
 import Stage from '@/components/stage';
 import { hexToRgb } from '@/helper-functions';
 
+const defaultColor = '#4A5056'
 const dimensions = [
   { value: 'iphonePortrait', text: 'iPhone 11 Pro/x portrait: 375x812', width: 375, height: 812 },
   { value: 'iphoneLandscape', text: 'iPhone 11 Pro/x landscape: 812x375', width: 812, height: 375 },
@@ -292,7 +293,7 @@ export default {
       const canvas = {
         drawingMode: true,
         canvas: null,
-        color: '#000000',
+        color: defaultColor,
         lineWidth: 1,
         id: this.id,
         actionables: []
