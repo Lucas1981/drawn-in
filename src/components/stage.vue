@@ -65,7 +65,6 @@ export default {
     },
     handleClickedActionable(actionable) {
       if (actionable.goto === null) return;
-      console.log(actionable.goto);
       const canvas = this.canvases.find(({ id }) => id === actionable.goto);
       this.stagedCanvas = canvas;
       this.stageCanvas();

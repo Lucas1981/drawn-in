@@ -89,6 +89,7 @@
           <canvas
             :id="`canvas-${canvas.id}`"
             class="layer"
+            :class="{ 'touch-action-none': canvas.drawingMode }"
             :style="`
               width: ${width}px;
               height: ${height}px;
@@ -155,7 +156,7 @@
 
 <script>
 // @ is an alias to /src
-import CanvasFreeDrawing from 'canvas-free-drawing';
+import CustomCanvasFreeDrawing from '@/custom-canvas-free-drawing';
 import Stage from '@/components/stage';
 import { hexToRgb } from '@/helper-functions';
 
@@ -250,7 +251,7 @@ export default {
       };
       this.canvases.push(canvas);
       await this.$nextTick();
-      canvas.canvas = new CanvasFreeDrawing({
+      canvas.canvas = new CustomCanvasFreeDrawing({
         elementId: `canvas-${this.id}`,
         width: this.width,
         height: this.height,
@@ -274,7 +275,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.home {
+.touch-action-none {
   touch-action: none;
 }
 
