@@ -25,6 +25,7 @@
       <b-button
         variant="outline-primary"
         v-b-modal.modal-center
+        @click="handlePlayPressed"
       >Play</b-button>
       <b-modal
         id="modal-center"
@@ -129,6 +130,7 @@
             v-for="(rect, actionableIndex) in canvas.actionables"
             :key="`popover-${index}-${actionableIndex}`"
             :target="`actionable-${index}-${actionableIndex}`"
+            :ref="`popover-${index}-${actionableIndex}`"
             triggers="click"
             placement="top"
           >
@@ -161,9 +163,14 @@ import Stage from '@/components/stage';
 import { hexToRgb } from '@/helper-functions';
 
 const dimensions = [
-  { value: 'iphone', text: 'iPhone 11 Pro/x: 375x812', width: 375, height: 812 },
-  { value: 'ipad', text: 'iPad Pro: 834x1194', width: 834, height: 1194 },
-  { value: 'imac', text: 'iMac Pro: 1440x900', width: 1440, height: 900 }
+  { value: 'iphonePortrait', text: 'iPhone 11 Pro/x portrait: 375x812', width: 375, height: 812 },
+  { value: 'iphoneLandscape', text: 'iPhone 11 Pro/x landscape: 812x375', width: 812, height: 375 },
+  { value: 'ipadPortrait', text: 'iPad Pro portrait: 834x1194', width: 834, height: 1194 },
+  { value: 'ipadLandscape', text: 'iPad Pro landscape: 1194x834', width: 1194, height: 834  },
+  { value: 'ipad12Portrait', text: 'iPad Pro 12.9 portrait: 1024x1366', width: 1024, height: 1366 },
+  { value: 'ipad12Landscape', text: 'iPad Pro 12.9 landscape: 1366x1024', width: 1366, height: 1024 },
+  { value: 'imacPortrait', text: 'iMac Pro: 1440x900', width: 1440, height: 900 },
+  { value: 'imacLandscape', text: 'iMac Pro: 900x1440', width: 900, height: 1440 }
 ];
 
 export default {
@@ -199,6 +206,10 @@ export default {
     }
   },
   methods: {
+    handlePlayPressed() {
+      // Make sure all the popups are closed so they don't show up over the modal
+      this.$root.$emit('bv::hide::popover');
+    },
     changeDimensions() {
       const dimension = dimensions.find(({ value }) => value === this.selectedDimension);
       this.width = dimension.width;
