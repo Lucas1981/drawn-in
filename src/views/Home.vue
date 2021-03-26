@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div
-      class="d-flex justify-content-center"
+      class="d-flex justify-content-center align-items-center"
     >
       <b-form-select
         v-model="selectedDimension"
@@ -13,20 +13,24 @@
         @click="addCanvas"
         class="mr-1"
       >
-        Add canvas
+        Add frame
       </b-button>
       <b-button
         variant="danger"
         @click="reset"
         class="mr-1"
       >
-        Remove canvases
+        Clear frames
       </b-button>
-      <b-button
-        variant="outline-primary"
-        v-b-modal.modal-center
-        @click="handlePlayPressed"
-      >Play</b-button>
+      <div class="h4 mb-2">
+        <b-icon-play-circle
+          variant="info"
+          v-b-modal.modal-center
+          class="cursor-pointer"
+          tabindex="0"
+          @click="handlePlayPressed"
+        ></b-icon-play-circle>
+      </div>
       <b-modal
         id="modal-center"
         centered
@@ -71,28 +75,33 @@
         >
           Drawing mode
         </b-form-checkbox>
-        <b-button
-          size="sm"
-          class="mr-1"
+        <b-icon-arrow-counterclockwise
+          tabindex="0"
+          class="mr-1 cursor-pointer"
+          @click="handleUndoClicked(canvas.canvas)"
+        ></b-icon-arrow-counterclockwise>
+        <b-icon-arrow-clockwise
+          tabindex="0"
+          class="mr-1 cursor-pointer"
+          @click="handleRedoClicked(canvas.canvas)"
+        ></b-icon-arrow-clockwise>
+        <b-icon-plus-circle
+          tabindex="0"
+          class="mr-1 cursor-pointer"
           @click="cloneCanvas(index, canvas.canvas)"
-        >
-          Clone
-        </b-button>
-        <b-button
-          variant="warning"
-          size="sm"
-          class="mr-1"
+        ></b-icon-plus-circle>
+        <b-icon-file-x
+          tabindex="0"
+          class="mr-1 cursor-pointer"
           @click="clearCanvas(canvas.canvas)"
-        >
-          Clear
-        </b-button>
-        <b-button
-          variant="danger"
-          size="sm"
+        ></b-icon-file-x>
+        <b-icon-trash
+          tabindex="0"
+          class="cursor-pointer"
           @click="removeCanvas(canvas.id)"
         >
           Remove
-        </b-button>
+        </b-icon-trash>
       </div>
       <div
         class="text-align-center text-center"
@@ -265,6 +274,12 @@ export default {
     handleChangeLineWidth({ canvas, lineWidth }) {
       canvas.setLineWidth(lineWidth);
     },
+    handleUndoClicked(canvas) {
+      canvas.undo();
+    },
+    handleRedoClicked(canvas) {
+      canvas.redo();
+    },
     clearCanvas(canvas) {
       canvas.clear();
     },
@@ -326,6 +341,10 @@ export default {
 
 .custom-small-input {
   max-width: 64px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .layer {
