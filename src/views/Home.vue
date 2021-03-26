@@ -18,9 +18,26 @@
       <b-button
         variant="danger"
         @click="reset"
+        class="mr-1"
       >
         Remove canvases
       </b-button>
+      <b-button
+        variant="outline-primary"
+        v-b-modal.modal-center
+      >Play</b-button>
+      <b-modal
+        id="modal-center"
+        centered
+        hide-footer
+        title="Playback"
+      >
+        <stage
+          :canvases="canvases"
+          :width="width"
+          :height="height"
+        />
+      </b-modal>
     </div>
 
     <div
@@ -139,6 +156,7 @@
 <script>
 // @ is an alias to /src
 import CanvasFreeDrawing from 'canvas-free-drawing';
+import Stage from '@/components/stage';
 import { hexToRgb } from '@/helper-functions';
 
 const dimensions = [
@@ -149,6 +167,9 @@ const dimensions = [
 
 export default {
   name: 'home',
+  components: {
+    Stage
+  },
   data: () => ({
     canvases: [],
     selectedDimension: dimensions[0].value,
