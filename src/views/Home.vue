@@ -52,8 +52,15 @@
           :id="`color-input-${canvas.id}`"
           type="color"
           v-model="canvas.color"
-          class="custom-color-input mr-1"
+          class="custom-small-input mr-1"
           @change="handleChangeColor(canvas)"
+        ></b-form-input>
+        <b-form-input
+          :id="`line-width-input-${canvas.id}`"
+          type="number"
+          v-model="canvas.lineWidth"
+          class="custom-small-input mr-1"
+          @change="handleChangeLineWidth(canvas)"
         ></b-form-input>
         <b-form-checkbox
           :id="`drawing-mode-checkbox-${canvas.id}`"
@@ -65,19 +72,26 @@
           Drawing mode
         </b-form-checkbox>
         <b-button
+          size="sm"
+          class="mr-1"
+          @click="cloneCanvas(index, canvas.canvas)"
+        >
+          Clone
+        </b-button>
+        <b-button
           variant="warning"
           size="sm"
           class="mr-1"
           @click="clearCanvas(canvas.canvas)"
         >
-          Clear canvas
+          Clear
         </b-button>
         <b-button
           variant="danger"
           size="sm"
           @click="removeCanvas(canvas.id)"
         >
-          Remove canvas
+          Remove
         </b-button>
       </div>
       <div
@@ -248,10 +262,18 @@ export default {
     handleChangeColor({canvas, color}) {
       canvas.setStrokeColor(hexToRgb(color)); // in RGB
     },
+    handleChangeLineWidth({ canvas, lineWidth }) {
+      canvas.setLineWidth(lineWidth);
+    },
     clearCanvas(canvas) {
       canvas.clear();
     },
-    async addCanvas() {
+    async cloneCanvas(index, sourceCanvas) {
+      const targetCanvas = await this.addCanvas(index);
+      const data = sourceCanvas.save();
+      targetCanvas.canvas.restore(data);
+    },
+    async addCanvas(index = null) {
       const canvas = {
         drawingMode: true,
         canvas: null,
@@ -260,7 +282,13 @@ export default {
         id: this.id,
         actionables: []
       };
-      this.canvases.push(canvas);
+      // If no index is specified, just push it onto the stack
+      if (index === null) {
+        this.canvases.push(canvas);
+      } else {
+        // Otherwise wedge it into the array
+        this.canvases.splice(index, 0, canvas);
+      }
       await this.$nextTick();
       canvas.canvas = new CustomCanvasFreeDrawing({
         elementId: `canvas-${this.id}`,
@@ -277,6 +305,8 @@ export default {
       canvas.canvas.on({ event: 'redraw' }, this.redraw);
 
       this.id++;
+
+      return canvas;
     },
     redraw() {
       // Do something
@@ -294,7 +324,7 @@ export default {
   max-width: 320px;
 }
 
-.custom-color-input {
+.custom-small-input {
   max-width: 64px;
 }
 
