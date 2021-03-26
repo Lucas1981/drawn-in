@@ -169,8 +169,8 @@ const dimensions = [
   { value: 'ipadLandscape', text: 'iPad Pro landscape: 1194x834', width: 1194, height: 834  },
   { value: 'ipad12Portrait', text: 'iPad Pro 12.9 portrait: 1024x1366', width: 1024, height: 1366 },
   { value: 'ipad12Landscape', text: 'iPad Pro 12.9 landscape: 1366x1024', width: 1366, height: 1024 },
-  { value: 'imacPortrait', text: 'iMac Pro: 1440x900', width: 1440, height: 900 },
-  { value: 'imacLandscape', text: 'iMac Pro: 900x1440', width: 900, height: 1440 }
+  { value: 'imacPortrait', text: 'iMac Pro portrait: 900x1400', width: 900, height: 1440 },
+  { value: 'imacLandscape', text: 'iMac Pro landscape: 1440x900', width: 1440, height: 900 }
 ];
 
 export default {
