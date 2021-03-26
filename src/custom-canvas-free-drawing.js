@@ -59,4 +59,4 @@ class CustomCanvasFreeDrawing extends CanvasFreeDrawing {
     }
 }
 
-export default CustomCanvasFreeDrawing
+export default CustomCanvasFreeDrawing;
