@@ -10,7 +10,7 @@
         @change="changeDimensions"
       ></b-form-select>
       <b-button
-        @click="addCanvas"
+        @click="addCanvas(null)"
         class="mr-1"
       >
         Add frame
@@ -95,13 +95,12 @@
           class="mr-1 cursor-pointer"
           @click="clearCanvas(canvas.canvas)"
         ></b-icon-file-x>
-        <b-icon-trash
-          tabindex="0"
-          class="cursor-pointer"
+        <div
           @click="removeCanvas(canvas.id)"
+          tabindex="0"
         >
-          Remove
-        </b-icon-trash>
+          <i class="fa fa-trash cursor-pointer"></i>
+        </div>
       </div>
       <div
         class="text-align-center text-center"
@@ -132,22 +131,28 @@
             <rect
               @click="handleClickedSvg(canvas, $event)"
               class="clickable-rect"
+              :ref="`background-rect-${canvas.id}`"
               x="0"
               y="0"
               :width="width"
               :height="height"
             >
             </rect>
-            <rect
+            <hit-box
               v-for="(rect, actionableIndex) in canvas.actionables"
               :key="`actionable-${index}-${actionableIndex}`"
+              v-model="canvas.actionables[actionableIndex]"
+              :container="getContainer(canvas.id)"
+              :id="`actionable-${index}-${actionableIndex}`"
+            />
+            <!-- <rect
               :id="`actionable-${index}-${actionableIndex}`"
               class="actionable"
               :x="rect.x"
               :y="rect.y"
               :width="rect.width"
               :height="rect.height"
-            ></rect>
+            ></rect> -->
           </svg>
           <b-popover
             v-for="(rect, actionableIndex) in canvas.actionables"
@@ -183,6 +188,7 @@
 // @ is an alias to /src
 import CustomCanvasFreeDrawing from '@/custom-canvas-free-drawing';
 import Stage from '@/components/stage';
+import HitBox from '@/components/hit-box';
 import { hexToRgb } from '@/helper-functions';
 
 const defaultColor = '#4A5056'
@@ -200,7 +206,8 @@ const dimensions = [
 export default {
   name: 'home',
   components: {
-    Stage
+    Stage,
+    HitBox
   },
   data: () => ({
     canvases: [],
@@ -230,6 +237,9 @@ export default {
     }
   },
   methods: {
+    getContainer(id) {
+      return this.$refs[`background-rect-${id}`][0];
+    },
     handlePlayPressed() {
       // Make sure all the popups are closed so they don't show up over the modal
       this.$root.$emit('bv::hide::popover');
@@ -247,6 +257,7 @@ export default {
       this.addCanvas();
     },
     removeCanvas(id) {
+      console.log('hit')
       const index = this.getCanvasById(id);
       this.canvases.splice(index, 1);
     },
@@ -355,12 +366,6 @@ export default {
 }
 
 .svg {
-  ::v-deep .actionable {
-    stroke: #0000ff;
-    fill: #8888ff;
-    opacity: 0.3;
-  }
-
   ::v-deep .clickable-rect {
     opacity: 0;
   }
