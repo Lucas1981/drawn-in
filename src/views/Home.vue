@@ -9,27 +9,33 @@
         :options="dimensions"
         @change="changeDimensions"
       ></b-form-select>
-      <b-button
+      <div
         @click="addCanvas(null)"
+        tabindex="0"
         class="mr-1"
       >
-        Add frame
-      </b-button>
-      <b-button
-        variant="danger"
+        <i class="fa fa-plus-circle cursor-pointer"></i>
+      </div>
+      <div
         @click="reset"
+        tabindex="0"
         class="mr-1"
       >
-        Clear frames
-      </b-button>
-      <div class="h4 mb-2">
-        <b-icon-play-circle
-          variant="info"
-          v-b-modal.modal-center
-          class="cursor-pointer"
-          tabindex="0"
-          @click="handlePlayPressed"
-        ></b-icon-play-circle>
+        <i class="fa fa-eraser cursor-pointer"></i>
+      </div>
+      <div
+        @click="handlePlayPressed"
+        tabindex="0"
+        class="mr-1"
+      >
+        <i class="fa fa-play-circle cursor-pointer"></i>
+      </div>
+      <div
+        @click="downloadHtml"
+        tabindex="0"
+        class="mr-1"
+      >
+        <i class="fa fa-download cursor-pointer"></i>
       </div>
       <b-modal
         id="modal-center"
@@ -189,6 +195,7 @@
 import CustomCanvasFreeDrawing from '@/custom-canvas-free-drawing';
 import Stage from '@/components/stage';
 import HitBox from '@/components/hit-box';
+import { downloadFile } from '@/file-handler.js';
 import { hexToRgb } from '@/helper-functions';
 
 const defaultColor = '#4A5056'
@@ -334,6 +341,13 @@ export default {
       this.id++;
 
       return canvas;
+    },
+    downloadHtml() {
+      const data = this.canvases.map(({ canvas, actionables }) => ({
+        imageData: canvas.save(),
+        actionables
+      }));
+      downloadFile('index.html', this.width, this.height, data);
     },
     redraw() {
       // Do something
